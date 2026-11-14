@@ -101,7 +101,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--source", choices=["webcam", "picamera", "image", "demo"], help="override camera source")
     p.add_argument("--image", help="image path (with --source image)")
     p.add_argument("--vision", choices=["gemini", "mock"], help="override vision backend")
-    p.add_argument("--actuator", choices=["gpio", "mock"], help="override actuator")
+    p.add_argument("--actuator", choices=["serial", "gpio", "mock"], help="override actuator")
     p.add_argument("--interval", type=float, help="seconds between frames")
     p.add_argument("--web", action="store_true", help="also serve the dashboard")
     p.add_argument("--port", type=int, help="dashboard port")

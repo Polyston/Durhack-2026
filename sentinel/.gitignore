@@ -4,3 +4,4 @@ __pycache__/
 events.jsonl
 .venv/
 *.egg-info/
+.pytest_cache/

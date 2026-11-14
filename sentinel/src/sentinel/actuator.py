@@ -81,9 +81,48 @@ class GpioActuator(Actuator):
                 d.close()
 
 
+class SerialActuator(Actuator):
+    """Drive LEDs/buzzer through an Arduino sketch over serial.
+
+    This is the path for the **Arduino UNO Q**: Sentinel's Python runs on the UNO Q's
+    Linux side, and sends the state to the on-board MCU (which appears as a serial port),
+    where `arduino/sentinel_actuator.ino` sets the pins. The same works on a laptop with
+    any Arduino over USB. One line per change: `STATE OK` / `STATE WARN` / `STATE ALARM`.
+    """
+
+    def __init__(self, cfg) -> None:
+        import serial  # lazy: pip install pyserial
+
+        self.ser = serial.Serial(cfg.serial_port, cfg.serial_baud, timeout=1)
+        time_sleep(2.0)  # allow the board to reset after opening the port
+        self._last: Severity | None = None
+
+    def apply(self, state: Severity) -> None:
+        if state == self._last:
+            return
+        self.ser.write(f"STATE {state.label}\n".encode())
+        self.ser.flush()
+        self._last = state
+
+    def close(self) -> None:
+        try:
+            self.ser.write(b"STATE OK\n")
+            self.ser.close()
+        except Exception:
+            pass
+
+
+def time_sleep(s: float) -> None:
+    import time
+
+    time.sleep(s)
+
+
 def make_actuator(cfg) -> Actuator:
     if cfg.kind == "mock":
         return MockActuator()
     if cfg.kind == "gpio":
         return GpioActuator(cfg)
+    if cfg.kind == "serial":
+        return SerialActuator(cfg)
     raise ValueError(f"Unknown actuator kind: {cfg.kind}")

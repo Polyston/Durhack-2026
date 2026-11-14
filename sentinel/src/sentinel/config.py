@@ -22,8 +22,12 @@ class CameraConfig:
 
 @dataclass
 class ActuatorConfig:
-    kind: str = "mock"  # mock | gpio
-    led_ok: int = 17  # BCM pins
+    kind: str = "mock"  # mock | serial (Arduino UNO Q / any Arduino) | gpio (Raspberry Pi)
+    # serial backend (Arduino UNO Q and USB Arduinos):
+    serial_port: str = "/dev/ttyACM0"  # UNO Q MCU bridge, or the Arduino's USB port
+    serial_baud: int = 115200
+    # gpio backend (Raspberry Pi, BCM pins):
+    led_ok: int = 17
     led_warn: int = 27
     led_alarm: int = 22
     buzzer: int = 23

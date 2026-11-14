@@ -43,8 +43,12 @@ decide:
 
 # ACT
 actuator:
-  kind: mock           # mock | gpio
-  led_ok: 17           # BCM pin numbers on the Raspberry Pi
+  kind: serial         # mock | serial (Arduino UNO Q / any Arduino) | gpio (Raspberry Pi)
+  # serial backend — the Arduino UNO Q path (see arduino/sentinel_actuator.ino):
+  serial_port: /dev/ttyACM0   # UNO Q's MCU bridge, or an Arduino's USB port
+  serial_baud: 115200
+  # gpio backend — Raspberry Pi only (BCM pins):
+  led_ok: 17
   led_warn: 27
   led_alarm: 22
   buzzer: 23

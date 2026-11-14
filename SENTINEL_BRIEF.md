@@ -1,6 +1,6 @@
 # Sentinel — project brief
 
-> **Status:** built and tested; needs a Gemini API key + hardware to run live &nbsp;·&nbsp; **Code:** [`sentinel/`](sentinel/) &nbsp;·&nbsp; **Prizes:** RS, MLH Best Use of Gemini
+> **Status:** built and tested; runs on the **Arduino UNO Q** (Linux brain + MCU-driven lights over serial). Needs a Gemini API key + the board to run live &nbsp;·&nbsp; **Code:** [`sentinel/`](sentinel/) &nbsp;·&nbsp; **Prizes:** RS, MLH Best Use of Gemini
 >
 > The project is already built — this is the spec to understand, demo and extend it. Sections 1–4 are the overview; 5 onward is the build detail. Roles are in section 9.
 
@@ -104,21 +104,36 @@ A failed call returns an **error** verdict instead of throwing.
 - **Fail safe:** on a vision error, **hold the last state** — a network blip must not silence a real alarm.
 
 ### Act (`actuator.py`)
-Maps state → outputs: OK = green LED; WARN = amber + short beeps; ALARM = red + steady buzzer + optional
-servo swinging a barrier closed. `MockActuator` prints the same transitions so you can demo with no wiring.
+Maps state → outputs: OK = green LED; WARN = amber + short beeps; ALARM = red + steady buzzer.
+Three backends: `mock` (prints, for a laptop), `serial` (Arduino UNO Q / any USB Arduino), `gpio`
+(Raspberry Pi). `MockActuator` means you can build and demo the whole thing with no wiring.
 
-## 8. Hardware wiring (Raspberry Pi)
+## 8. Hardware — Arduino UNO Q (our board)
 
-| Part | Pin (BCM) | Notes |
+The UNO Q has a **Linux CPU and an MCU on one board**. Sentinel's Python runs on the Linux side with
+a USB webcam; a small Arduino sketch on the MCU drives the pins; they talk over serial. (This is why
+a plain Arduino isn't enough on its own — Sentinel's brain needs Linux, which the UNO Q has.)
+
+**Parts:** Arduino UNO Q · USB webcam · USB hub · 3 LEDs (green/amber/red) · 3 resistors 220–330 Ω ·
+1 active buzzer · breadboard + jumper wires.
+
+**Wiring** (digital pins, set at the top of the sketch):
+
+| Signal | UNO Q pin | To |
 |---|---|---|
-| Green LED | 17 | through a 220–330 Ω resistor to GND |
-| Amber LED | 27 | same |
-| Red LED | 22 | same |
-| Buzzer | 23 | active buzzer to GND |
-| Servo (optional) | set `servo:` in config | a barrier arm; swings closed on ALARM |
-| Camera | CSI ribbon or USB | `source: picamera` or `webcam` |
+| Green LED | D2 | →[220–330 Ω]→ LED → GND |
+| Amber LED | D3 | →[220–330 Ω]→ LED → GND |
+| Red LED | D4 | →[220–330 Ω]→ LED → GND |
+| Buzzer | D5 | → buzzer(+); buzzer(−) → GND |
 
-Change any pin in `config.yaml`. Nothing in code is hard-wired.
+**Steps:** (1) flash [`sentinel/arduino/sentinel_actuator.ino`](sentinel/arduino/sentinel_actuator.ino)
+to the MCU with Arduino App Lab; (2) on the Linux side `pip install pyyaml google-generativeai
+opencv-python pyserial` and set your Gemini key; (3) set `actuator.serial_port` (usually
+`/dev/ttyACM0`) in `config.yaml`; (4) run `PYTHONPATH=src python -m sentinel.app --source webcam
+--vision gemini --actuator serial --web`. Full table and alternatives in [`sentinel/README.md`](sentinel/README.md).
+
+> A Raspberry Pi is an alternative (`--actuator gpio`, BCM pins 17/27/22/23). Any USB Arduino on a
+> laptop also works with `--actuator serial`.
 
 ## 9. Roles (2–3 people; this is a one-day build)
 

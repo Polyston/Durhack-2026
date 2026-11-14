@@ -47,7 +47,52 @@ PYTHONPATH=src python -m sentinel.app --source webcam --vision gemini --actuator
 Hold a hazard up to the webcam (take your glasses off; put a box "in the exit") and watch the
 dashboard flip to ALARM.
 
-### 3. Hardware (Raspberry Pi)
+### 3. Hardware — Arduino UNO Q (our target board)
+
+The UNO Q runs Linux on one chip and has an MCU for the pins on the same board. So Sentinel's
+Python brain runs on its Linux side with a USB webcam, and a tiny Arduino sketch on the MCU drives
+the lights and buzzer. They talk over serial.
+
+**Parts you need**
+
+| Part | Notes |
+|---|---|
+| Arduino **UNO Q** | the board (Linux CPU + MCU) |
+| USB **webcam** | any UVC webcam; plug into the UNO Q's USB (a USB hub helps if you also want a keyboard) |
+| 3 **LEDs** — green, amber, red | the OK / WARN / ALARM lights |
+| 3 **resistors**, 220–330 Ω | one in series with each LED |
+| 1 **active buzzer** | the alarm sound |
+| **breadboard** + jumper wires | to wire it up |
+| USB-C power for the UNO Q | its normal supply |
+
+**Wiring** (digital pins; change them at the top of the sketch if needed)
+
+| Signal | UNO Q pin | To |
+|---|---|---|
+| Green LED | D2 | →[220–330 Ω]→ LED → GND |
+| Amber LED | D3 | →[220–330 Ω]→ LED → GND |
+| Red LED | D4 | →[220–330 Ω]→ LED → GND |
+| Buzzer | D5 | → buzzer(+); buzzer(−) → GND |
+
+**Steps**
+
+1. **Flash the MCU.** Open [`arduino/sentinel_actuator.ino`](arduino/sentinel_actuator.ino) in **Arduino App Lab** and upload it to the UNO Q's MCU.
+2. **On the UNO Q's Linux side**, get the code and install deps:
+   ```bash
+   cd sentinel
+   pip install pyyaml google-generativeai opencv-python pyserial
+   cp .env.example .env        # paste your Gemini key
+   ```
+3. **Find the serial port** to the MCU (usually `/dev/ttyACM0`): `ls /dev/ttyACM*`. Put it in `config.yaml` under `actuator.serial_port`.
+4. **Run it:**
+   ```bash
+   PYTHONPATH=src python -m sentinel.app --source webcam --vision gemini --actuator serial --web
+   ```
+5. Hold a hazard up to the webcam. The dashboard and the LEDs change together.
+
+> The same `--actuator serial` path works with **any USB Arduino** on a laptop: upload the sketch, set `serial_port` to the port the IDE shows (`/dev/ttyUSB0`, `COM3`, …).
+
+### 3b. Hardware — Raspberry Pi (alternative)
 ```bash
 pip install gpiozero rpi-lgpio                 # + picamera2 if using the Pi Camera
 PYTHONPATH=src python -m sentinel.app --source picamera --vision gemini --actuator gpio --web
