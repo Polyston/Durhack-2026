@@ -70,7 +70,7 @@ test("multiple packets + an ACK all survive the round trip", () => {
 });
 
 test("frames read out of order still reassemble", () => {
-  const a = newNode("A"), b = newNode("B");
+  const a = newNode("A");
   addOwnPacket(a, makePacket({ kind: "payment", priority: 1, origin: "A", payload: "p", now: 0 }), 0);
   addOwnPacket(a, makePacket({ kind: "sos", priority: 3, origin: "A", payload: "s", now: 0 }), 0);
   const { frames } = buildFrames(a, 0);
