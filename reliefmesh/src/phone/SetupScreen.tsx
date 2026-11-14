@@ -39,10 +39,15 @@ export function SetupScreen() {
   if (!keypair) {
     return (
       <>
-        <div>
-          <h1 className="h1">Get ready before you need it</h1>
-          <p className="lede">Set this up while you still have signal. It makes a wallet on this phone and prepares payments you can sign later with no connection.</p>
+        <div className="hero">
+          <h1 className="h1">When the towers fall,<br />phones become the network.</h1>
+          <p className="lede">Send an SOS or money with no signal. Phones pass it hand to hand until one reaches the internet and settles it on Solana.</p>
         </div>
+        <ol className="steps">
+          <li><b>Sign</b><span>Write an SOS or payment offline — it's signed on your phone.</span></li>
+          <li><b>Hand over</b><span>Pass it phone to phone by QR. No server, no towers.</span></li>
+          <li><b>Arrive</b><span>The first phone online uploads everything to Solana.</span></li>
+        </ol>
         <div className="panel">
           <label className="field">
             <span>Your name, as other phones will see it</span>
@@ -51,6 +56,7 @@ export function SetupScreen() {
           <button className="btn main" disabled={!nameInput.trim()} onClick={() => setWallet(createWallet().secret, nameInput.trim())}>
             Create my wallet
           </button>
+          <p className="note">Do this while you still have signal. After that, it works in airplane mode.</p>
         </div>
       </>
     );

@@ -272,6 +272,22 @@ textarea { resize: vertical; }
 
 .foot { text-align: center; font-size: 0.85rem; color: var(--steel); }
 
+/* ---------- first-run welcome */
+.hero { padding: 6px 0 2px; }
+.hero .h1 { font-size: 2.1rem; line-height: 1.04; }
+.steps { list-style: none; counter-reset: s; margin: 2px 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 28px 1fr; column-gap: 13px; row-gap: 1px; }
+.steps li::before {
+  content: counter(s);
+  grid-column: 1; grid-row: 1 / span 2;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--hivis); color: var(--hivis-ink);
+  font-weight: 800; font-size: 0.95rem; font-stretch: 100%;
+  display: grid; place-items: center; align-self: start;
+}
+.steps li b { grid-column: 2; font-stretch: 78%; font-weight: 800; font-size: 1.02rem; }
+.steps li span { grid-column: 2; color: var(--steel); font-size: 0.88rem; }
+
 /* ---------- simulation dashboard: a site plan */
 .dash { max-width: 1240px; margin: 0 auto; padding: 24px 20px 48px; display: grid; gap: 22px; }
 .dashhead { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 24px; }

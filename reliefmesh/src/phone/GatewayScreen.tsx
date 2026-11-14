@@ -78,12 +78,16 @@ export function GatewayScreen() {
         <ul className="packets">
           {live.map((r) => (
             <li key={r.packet.id} className={`packet p${r.packet.priority}`}>
-              <div className="kind">{r.packet.kind === "sos" ? "SOS" : "Payment"}: {r.ok ? (r.alreadyLanded ? "already delivered by another phone" : "delivered") : "not delivered"}</div>
+              <div className="kind">{r.packet.kind === "sos" ? "SOS" : "Payment"}: {r.ok ? (r.alreadyLanded ? "already delivered ✓" : "delivered ✓") : "not delivered"}</div>
               <div className="meta">
                 {r.ok && r.alreadyLanded && <span>Same signed copy, so it was paid only once.</span>}
                 {!r.ok && <span>{r.error}. It stays on this phone; try again.</span>}
-                {r.sig && <a href={explorerTx(r.sig)} target="_blank" rel="noreferrer">See it on Solana Explorer</a>}
               </div>
+              {r.sig && (
+                <a className="btn small" style={{ marginTop: 8, width: "100%" }} href={explorerTx(r.sig)} target="_blank" rel="noreferrer">
+                  View on Solana Explorer →
+                </a>
+              )}
             </li>
           ))}
         </ul>
