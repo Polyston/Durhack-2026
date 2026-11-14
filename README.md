@@ -1,9 +1,9 @@
 # Durhack-2026
-MLH Tracks Targeted:
-    - Best use of Gemini API
-    - Best use of Elevenlabs
-    - Dev
-    - Solana (Maybe)
+MLH Tracks Targeted: <br />
+    - Best use of Gemini API <br />
+    - Best use of Elevenlabs <br />
+    - Dev <br />
+    - Solana (Maybe) <br />
 
-Sponsor Tracks Targeted:
+Sponsor Tracks Targeted: <br />
     Neptune North
