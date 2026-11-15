@@ -83,8 +83,3 @@ the Claude API for rapid 3D prototyping.
 - Build a network of devices that gives full-body coverage, with each node independent so the
   others keep working if one fails
 - Miniaturise the device
-
-## Challenge materials
-
-- [Neptune North challenge](Neptune%20North%20challenge%202.pdf)
-- [Opening ceremony deck](Opening%20Ceremony.pdf)
